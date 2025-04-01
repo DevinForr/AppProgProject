@@ -1,0 +1,72 @@
+<!-- welcome.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <style>
+        .course-list {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ first_name }}!</h1>
+
+    <button id="createBlockButton">Create a Block</button>
+
+    <div id="createBlockUI" style="display: none;">
+        <h2>Course Block</h2>
+        <ul id="courseList" class="course-list">
+            <!-- List of courses will appear here -->
+        </ul>
+        <button id="addCourseButton">Add Course</button>
+        <button id="saveBlockButton">Save Block</button>
+    </div>
+
+    <script>
+        const createBlockButton = document.getElementById('createBlockButton');
+        const createBlockUI = document.getElementById('createBlockUI');
+        const addCourseButton = document.getElementById('addCourseButton');
+        const saveBlockButton = document.getElementById('saveBlockButton');
+        const courseList = document.getElementById('courseList');
+
+        let courses = [];
+
+        createBlockButton.addEventListener('click', () => {
+            createBlockUI.style.display = 'block';
+        });
+
+        addCourseButton.addEventListener('click', () => {
+            const courseName = prompt("Enter the course name:");
+            const startTime = prompt("Enter the start time (e.g., 9:00 AM):");
+            const endTime = prompt("Enter the end time (e.g., 10:00 AM):");
+            const dayOfWeek = prompt("Enter the day of the week (e.g., Monday):");
+
+            // Create course object
+            const course = {
+                courseName,
+                startTime,
+                endTime,
+                dayOfWeek
+            };
+
+            // Add to the courses list
+            courses.push(course);
+
+            // Display course in the UI
+            const li = document.createElement('li');
+            li.innerHTML = `${course.courseName} - ${course.startTime} to ${course.endTime} on ${course.dayOfWeek}`;
+            courseList.appendChild(li);
+        });
+
+        saveBlockButton.addEventListener('click', () => {
+            // Send the courses list to the server (using session storage or an API)
+            const courseData = JSON.stringify(courses);
+            sessionStorage.setItem('courseBlock', courseData); // Store in sessionStorage temporarily
+            alert("Block saved successfully!");
+        });
+    </script>
+</body>
+</html>
