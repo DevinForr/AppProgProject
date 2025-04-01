@@ -10,8 +10,8 @@
 <body>
     <h1>Log in as:</h1>
     <form action="" method="get">
-        <button onclick="href='student_home.html'">Student</button>
-        <button onclick="href='instructor_home.html'">Instructor</button>
+         <a href="{% url 'student_home' %}" data-page="student">Student</a>
+        <a href="{% url 'instructor_home' %}" data-page="instructor">Instructor</a>
     </form>
 </body>
 </html>
