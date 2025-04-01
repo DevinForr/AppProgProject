@@ -1,4 +1,3 @@
-<!-- welcome.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,47 +24,113 @@
         <button id="saveBlockButton">Save Block</button>
     </div>
 
+     <!-- Button to add a course -->
+     <div id="courseFormContainer">
+        <!-- Form for adding courses will be displayed here -->
+    </div>
+
     <script>
         const createBlockButton = document.getElementById('createBlockButton');
         const createBlockUI = document.getElementById('createBlockUI');
-        const addCourseButton = document.getElementById('addCourseButton');
+        const courseFormContainer = document.getElementById('courseFormContainer');
         const saveBlockButton = document.getElementById('saveBlockButton');
         const courseList = document.getElementById('courseList');
 
         let courses = [];
 
+        // Show the course block UI when the button is clicked
         createBlockButton.addEventListener('click', () => {
             createBlockUI.style.display = 'block';
+            displayCourseForm();  // Show the course input form
         });
 
-        addCourseButton.addEventListener('click', () => {
-            const courseName = prompt("Enter the course name:");
-            const startTime = prompt("Enter the start time (e.g., 9:00 AM):");
-            const endTime = prompt("Enter the end time (e.g., 10:00 AM):");
-            const dayOfWeek = prompt("Enter the day of the week (e.g., Monday):");
+        // Display the course input form
+        function displayCourseForm() {
+            const courseFormHTML = `
+                <div class="course-form" id="courseForm">
+                    <label for="courseName">Course Name:</label>
+                    <input type="text" id="courseName" placeholder="Enter course name" required>
 
-            // Create course object
-            const course = {
-                courseName,
-                startTime,
-                endTime,
-                dayOfWeek
-            };
+                    <label for="startTime">Start Time:</label>
+                    <input type="time" id="startTime" required>
 
-            // Add to the courses list
-            courses.push(course);
+                    <label for="endTime">End Time:</label>
+                    <input type="time" id="endTime" required>
 
-            // Display course in the UI
-            const li = document.createElement('li');
-            li.innerHTML = `${course.courseName} - ${course.startTime} to ${course.endTime} on ${course.dayOfWeek}`;
-            courseList.appendChild(li);
-        });
+                    <label for="dayOfWeek">Day of the Week:</label>
+                    <select id="dayOfWeek" required>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                    </select>
+                </div>
+            `;
+            courseFormContainer.innerHTML = courseFormHTML;
 
+            // Event listener to add course
+            const addCourseButton = document.getElementById('addCourseButton');
+            addCourseButton.addEventListener('click', () => {
+                addCourse();
+            });
+        }
+
+        // Add a new course to the list
+        function addCourse() {
+            const courseName = document.getElementById('courseName').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const dayOfWeek = document.getElementById('dayOfWeek').value;
+
+            if (courseName && startTime && endTime && dayOfWeek) {
+                // Create the course object
+                const course = {
+                    courseName,
+                    startTime,
+                    endTime,
+                    dayOfWeek
+                };
+
+                // Add the course to the courses array
+                courses.push(course);
+
+                // Display the course in the list
+                const li = document.createElement('li');
+                li.innerHTML = `${course.courseName} - ${course.startTime} to ${course.endTime} on ${course.dayOfWeek}`;
+                courseList.appendChild(li);
+
+                // Clear the form after adding the course
+                document.getElementById('courseName').value = '';
+                document.getElementById('startTime').value = '';
+                document.getElementById('endTime').value = '';
+                document.getElementById('dayOfWeek').value = 'Monday';  // Reset to default value
+            } else {
+                alert("Please fill out all fields.");
+            }
+        }
+
+        // Save the block when the user clicks the save button
         saveBlockButton.addEventListener('click', () => {
-            // Send the courses list to the server (using session storage or an API)
-            const courseData = JSON.stringify(courses);
-            sessionStorage.setItem('courseBlock', courseData); // Store in sessionStorage temporarily
-            alert("Block saved successfully!");
+            if (courses.length > 0) {
+                // Convert courses list to JSON and store it in sessionStorage
+                const courseData = JSON.stringify(courses);
+                sessionStorage.setItem('courseBlock', courseData);
+
+                // Optionally, send this data to the server with fetch()
+                fetch('/save_block/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ courses: courses })
+                })
+                .then(response => response.json())
+                .then(data => alert("Block saved successfully!"))
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert("No courses to save.");
+            }
         });
     </script>
 </body>

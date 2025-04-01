@@ -8,7 +8,7 @@
 <body>
     <h1>Enter Your Information</h1>
     
-    <form action="" method="POST">
+    <form action="{% url 'instructor_block' %}" method="POST">
         {% csrf_token %}
 
         <label for="first_name">First Name:</label>

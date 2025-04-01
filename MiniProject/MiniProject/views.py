@@ -31,8 +31,8 @@ def get_instructor_info(request):
         # Redirect to welcome page with user's data passed in URL or session
         request.session['first_name'] = first_name
         request.session['last_name'] = last_name
-        return redirect('welcome')
-    return render(request, 'user_form.html')
+        return redirect('instructor_home')
+    return render(request, 'instructor_home.html')
 
 def welcome_view(request):
     # Retrieve user data from session
