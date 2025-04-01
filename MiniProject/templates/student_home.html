@@ -1,3 +1,37 @@
 <!DOCTYPE html>
-<h1>TEST STUDENT</h1>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Information Form</title>
+</head>
+<body>
+    <h1>Enter Your Information</h1>
+    
+    <form action="{% url 'enrollment' %}" method="POST">
+        {% csrf_token %}
+
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required placeholder="Enter your first name"><br><br>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required placeholder="Enter your last name"><br><br>
+
+        <label for="department">Department:</label>
+        <select id="department" name="department" required>
+            <option value="">Select your department</option>
+            <option value="ast">Applied Sciences and Technology</option>
+            <option value="bui">Longo Faculty of Buisness</option>
+            <option value="hsw">Health Sciences & Wellness</option>
+            <option value="lib">Liberal Arts</option>
+            <option value="soc">Social and Community Services</option>
+        </select><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="Enter your email"><br><br>
+
+        <!-- Submit Button -->
+        <button type="submit">Submit</button>
+    </form>
+</body>
 </html>

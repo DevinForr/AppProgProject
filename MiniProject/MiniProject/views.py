@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.template import loader
 from django import forms
 from django.http import JsonResponse
+import json
 
 
 def login(request):
@@ -20,6 +21,9 @@ def instructor_home(request):
 def instructor_block(request):
     print("instructor_block\n")
     return render(request, 'instructor_block.html')
+
+def enrollment(request):
+    return render(request, 'enrollment.html')
 
 def get_instructor_info(request):
     if request.method == 'POST':
@@ -39,3 +43,31 @@ def welcome_view(request):
     first_name = request.session.get('first_name', 'Guest')
     
     return render(request, 'instructor_block.html', {'first_name': first_name})
+
+def get_blocks_from_session(request):
+    # Retrieve the blocks from the session
+    blocks = request.session.get('blocks', [])
+
+    # If no blocks are found, return an empty list
+    if not blocks:
+        return []
+
+    return blocks
+
+def student_blocks_view(request):
+    # Fetch all blocks stored in session
+    blocks = get_blocks_from_session(request)
+
+    # Pass the blocks to the template
+    return render(request, 'enrollment.html', {'blocks': blocks})
+
+def view_block_details(request, block_id):
+    # Fetch all blocks
+    blocks = get_blocks_from_session(request)
+    block = next((block for block in blocks if block['id'] == block_id), None)
+    
+    if block:
+        # Pass the selected block details to the template
+        return render(request, 'enrollment.html', {'block': block})
+    else:
+        return JsonResponse({"status": "error", "message": "Block not found."})

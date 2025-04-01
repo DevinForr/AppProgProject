@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Blocks</title>
+    <style>
+        .course-list {
+            margin-top: 20px;
+            padding-left: 0;
+        }
+        .course-list li {
+            list-style-type: none;
+            margin: 5px 0;
+        }
+        .block-details {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            display: none; /* Hide details by default */
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Saved Blocks</h1>
+
+    {% if blocks %}
+        <ul class="course-list">
+            {% for block in blocks %}
+                <li>
+                    <button class="block-button" data-block-id="{{ block.id }}">
+                        Block ID: {{ block.id }} - {{ block.course_name }}
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Container for the block details, initially hidden -->
+        <div id="blockDetailsContainer">
+            <!-- Block details will be rendered here when a block is clicked -->
+        </div>
+
+    {% else %}
+        <p>No blocks saved yet.</p>
+    {% endif %}
+
+    <script>
+       
+        
+        // Get all the block buttons and the container where details will appear
+        const blockButtons = document.querySelectorAll('.block-button');
+        const blockDetailsContainer = document.getElementById('blockDetailsContainer');
+
+        // Handle block button clicks to show block details
+        blockButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const blockId = parseInt(event.target.dataset.blockId, 10);
+                const block = blocks.find(b => b.id === blockId);
+
+                // Create HTML for block details
+                let blockDetailsHTML = `
+                    <div class="block-details" id="block-details-${blockId}">
+                        <h2>Block ID: ${block.id} - ${block.course_name}</h2>
+                        <h3>Courses:</h3>
+                        <ul>
+                `;
+
+                block.courses.forEach(course => {
+                    blockDetailsHTML += `
+                        <li>
+                            ${course.course_name} - ${course.start_time} to ${course.end_time} on ${course.day_of_week}
+                        </li>
+                    `;
+                });
+
+                blockDetailsHTML += '</ul></div>';
+
+                // Check if details for this block already exist; if so, toggle visibility
+                const existingDetails = document.getElementById(`block-details-${blockId}`);
+                if (existingDetails) {
+                    // Toggle the visibility of the existing details
+                    existingDetails.style.display = existingDetails.style.display === 'none' ? 'block' : 'none';
+                } else {
+                    // Append the new block details HTML to the container
+                    blockDetailsContainer.insertAdjacentHTML('beforeend', blockDetailsHTML);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
